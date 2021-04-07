@@ -1,6 +1,12 @@
 const { nanoid } = require("nanoid");
 const DynamoDB = require("../common/DynamoDB");
 const tableName = process.env.tableName;
+/**
+ * This function receives the bulk records of csv file data converted to JSON
+ * @param {*} event
+ * @param {*} context
+ * @param {*} callback
+ */
 exports.handler = (event, context, callback) => {
   const response = {
     statusCode: 200,

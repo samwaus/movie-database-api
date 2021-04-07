@@ -37,10 +37,10 @@ functions:
           path: api/cinemaworld/movies
           method: get
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+          #authorizer:
+          #type: COGNITO_USER_POOLS
+          #authorizerId:
+          #Ref: ApiGatewayAuthorizer
   getMovieCinemaWorld:
     handler: lambdas/endpoints/cinemaworld/getMovie.handler
     events:
@@ -48,10 +48,10 @@ functions:
           path: api/cinemaworld/movie/{ID}
           method: get
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+          #authorizer:
+          #type: COGNITO_USER_POOLS
+          #authorizerId:
+          #Ref: ApiGatewayAuthorizer
   saveMovieCinemaWorld:
     handler: lambdas/endpoints/cinemaworld/addMovie.handler
     events:
@@ -59,10 +59,10 @@ functions:
           path: api/cinemaworld/movie
           method: post
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+          #authorizer:
+          #type: COGNITO_USER_POOLS
+          #authorizerId:
+          #Ref: ApiGatewayAuthorizer
   getAllMoviesFilmWorld:
     handler: lambdas/endpoints/filmworld/getAllMovies.handler
     events:
@@ -70,10 +70,10 @@ functions:
           path: api/filmworld/movies
           method: get
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+          #authorizer:
+          #type: COGNITO_USER_POOLS
+          #authorizerId:
+          #Ref: ApiGatewayAuthorizer
   getMovieFilmWorld:
     handler: lambdas/endpoints/filmworld/getMovie.handler
     events:
@@ -81,10 +81,10 @@ functions:
           path: api/filmworld/movie/{ID}
           method: get
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+          #authorizer:
+          #type: COGNITO_USER_POOLS
+          #authorizerId:
+          #Ref: ApiGatewayAuthorizer
   saveMovieFilmWorld:
     handler: lambdas/endpoints/filmworld/addMovie.handler
     events:
@@ -92,10 +92,10 @@ functions:
           path: api/filmworld/movie
           method: post
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+          #authorizer:
+          #type: COGNITO_USER_POOLS
+          #authorizerId:
+          #Ref: ApiGatewayAuthorizer
   saveMovieInBulk:
     handler: lambdas/endpoints/addMovieToSQS.handler
     events:
@@ -103,10 +103,10 @@ functions:
           path: api/movies/
           method: post
           cors: true
-          authorizer:
-            type: COGNITO_USER_POOLS
-            authorizerId:
-              Ref: ApiGatewayAuthorizer
+          #authorizer:
+          #type: COGNITO_USER_POOLS
+          #authorizerId:
+          #Ref: ApiGatewayAuthorizer
       - schedule:
           rate: cron(*/2 * * * ? *)
           enabled: true

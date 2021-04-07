@@ -6,8 +6,13 @@ const DynamoDB = {
   async getAll(TableName, api) {
     const params = {
       TableName,
-      Key: {
-        api: { S: api },
+      ProjectionExpression: "ID, api, #moviename, price",
+      FilterExpression: "api = :apiValue",
+      ExpressionAttributeNames: {
+        "#moviename": "name",
+      },
+      ExpressionAttributeValues: {
+        ":apiValue": api,
       },
     };
 
