@@ -37,6 +37,10 @@ functions:
           path: api/cinemaworld/movies
           method: get
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   getMovieCinemaWorld:
     handler: lambdas/endpoints/cinemaworld/getMovie.handler
     events:
@@ -44,6 +48,10 @@ functions:
           path: api/cinemaworld/movie/{ID}
           method: get
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   saveMovieCinemaWorld:
     handler: lambdas/endpoints/cinemaworld/addMovie.handler
     events:
@@ -51,6 +59,10 @@ functions:
           path: api/cinemaworld/movie
           method: post
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   getAllMoviesFilmWorld:
     handler: lambdas/endpoints/filmworld/getAllMovies.handler
     events:
@@ -58,6 +70,10 @@ functions:
           path: api/filmworld/movies
           method: get
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   getMovieFilmWorld:
     handler: lambdas/endpoints/filmworld/getMovie.handler
     events:
@@ -65,6 +81,10 @@ functions:
           path: api/filmworld/movie/{ID}
           method: get
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   saveMovieFilmWorld:
     handler: lambdas/endpoints/filmworld/addMovie.handler
     events:
@@ -72,6 +92,10 @@ functions:
           path: api/filmworld/movie
           method: post
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   saveMovieInBulk:
     handler: lambdas/endpoints/addMovieToSQS.handler
     events:
@@ -79,6 +103,10 @@ functions:
           path: api/movies/
           method: post
           cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
       - schedule:
           rate: cron(*/2 * * * ? *)
           enabled: true
@@ -118,3 +146,36 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "MovieDataUploadQueue"
+    CognitoUserPool:
+      Type: "AWS::Cognito::UserPool"
+      Properties:
+        MfaConfiguration: OFF
+        UserPoolName: movie-user-pool
+        UsernameAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 6
+            RequireLowercase: True
+            RequireNumbers: True
+            RequireSymbols: True
+            RequireUppercase: True
+    CognitoUserPoolClient:
+      Type: "AWS::Cognito::UserPoolClient"
+      Properties:
+        ClientName: movie-user-pool-client
+        GenerateSecret: False
+        UserPoolId:
+          Ref: CognitoUserPool
+    ApiGatewayAuthorizer:
+      DependsOn:
+        - ApiGatewayRestApi
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: cognito-authorizer
+        IdentitySource: method.request.header.Authorization
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - Fn::GetAtt: [CognitoUserPool, Arn]
