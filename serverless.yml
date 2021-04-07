@@ -17,6 +17,10 @@ provider:
       Action:
         - dynamodb:*
       Resource: "*"
+    - Effect: Allow
+      Action:
+        - sqs:*
+      Resource: "*"
 
 plugins:
   - serverless-webpack
@@ -68,6 +72,26 @@ functions:
           path: api/filmworld/movie
           method: post
           cors: true
+  saveMovieInBulk:
+    handler: lambdas/endpoints/addMovieToSQS.handler
+    events:
+      - http:
+          path: api/movies/
+          method: post
+          cors: true
+      - schedule:
+          rate: cron(*/2 * * * ? *)
+          enabled: true
+  # Function to consume the SQS
+  addMovies:
+    handler: lambdas/endpoints/addMoviesInBulk.handler
+    reservedConcurrency: 10
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - MovieDataUploadQueue
+              - Arn
 
 custom:
   tableName: movies-rates

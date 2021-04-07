@@ -43,7 +43,7 @@ const getMovie = async (api, event) => {
 };
 
 const addMovie = async (api, event) => {
-  console.log("event", event);
+  console.log("event add movie", event);
   if (!event.body) {
     // no movie data submitted
     return Responses.failure_400({ message: "Movie data not submitted." });
@@ -53,12 +53,12 @@ const addMovie = async (api, event) => {
   // add the ID
   movie.ID = nanoid();
 
-  const newUser = await DynamoDB.write(movie, tableName).catch((err) => {
+  const newMovie = await DynamoDB.write(movie, tableName).catch((err) => {
     console.log("Error in saving the movie");
     return null;
   });
 
-  if (!newUser) {
+  if (!newMovie) {
     return Responses.failure_400({
       message: "Couldn't create a new movie",
     });
