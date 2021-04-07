@@ -1,0 +1,96 @@
+service: movie-database-api
+
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  profile: serverlessUser # This is my local AWS config account name
+  lambdaHashingVersion: 20201221
+  region: ap-southeast-2
+  stage: dev
+  environment:
+    tableName: ${self:custom.tableName}
+    cachedTableName: ${self:custom.cachedTableName}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: "*"
+
+plugins:
+  - serverless-webpack
+
+package:
+  individually: true
+
+# The real stuff
+functions:
+  getAllMoviesCinemaWorld:
+    handler: lambdas/endpoints/cinemaworld/getAllMovies.handler
+    events:
+      - http:
+          path: api/cinemaworld/movies
+          method: get
+          cors: true
+  getMovieCinemaWorld:
+    handler: lambdas/endpoints/cinemaworld/getMovie.handler
+    events:
+      - http:
+          path: api/cinemaworld/movie/{ID}
+          method: get
+          cors: true
+  saveMovieCinemaWorld:
+    handler: lambdas/endpoints/cinemaworld/addMovie.handler
+    events:
+      - http:
+          path: api/cinemaworld/movie
+          method: post
+          cors: true
+  getAllMoviesFilmWorld:
+    handler: lambdas/endpoints/filmworld/getAllMovies.handler
+    events:
+      - http:
+          path: api/filmworld/movies
+          method: get
+          cors: true
+  getMovieFilmWorld:
+    handler: lambdas/endpoints/filmworld/getMovie.handler
+    events:
+      - http:
+          path: api/filmworld/movie/{ID}
+          method: get
+          cors: true
+  saveMovieFilmWorld:
+    handler: lambdas/endpoints/filmworld/addMovie.handler
+    events:
+      - http:
+          path: api/filmworld/movie
+          method: post
+          cors: true
+
+custom:
+  tableName: movies-rates
+  cachedTableName: movie-rates-cached
+  webpackIncludeModules: true; # Bundle external modules used
+# environment variables here
+# environment:
+
+# CloudFormation resource templates
+resources:
+  Resources:
+    MoviesDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    MovieDataUploadQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "MovieDataUploadQueue"
