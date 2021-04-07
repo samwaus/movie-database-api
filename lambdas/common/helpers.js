@@ -5,7 +5,7 @@ const DynamoDB = require("./DynamoDb");
 const tableName = process.env.tableName;
 
 const getAllMovies = async (api) => {
-  const movies = await DynamoDB.getAll(tableName).catch((err) => {
+  const movies = await DynamoDB.getAll(tableName, api).catch((err) => {
     console.log("error in loading data", err);
     return null;
   });

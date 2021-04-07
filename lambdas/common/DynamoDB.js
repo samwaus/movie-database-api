@@ -3,9 +3,12 @@ const AWS = require("aws-sdk");
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 const DynamoDB = {
-  async getAll(TableName) {
+  async getAll(TableName, api) {
     const params = {
       TableName,
+      Key: {
+        api: { S: api },
+      },
     };
 
     const scanResults = [];
