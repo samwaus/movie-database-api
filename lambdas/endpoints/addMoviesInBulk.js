@@ -21,11 +21,12 @@ exports.handler = (event, context, callback) => {
     event.Records.map(async (record) => {
       console.log("#### Record", record.body);
       // it is assumed that the record contains 2 fields. 1. movie object, 2.api (cinemaworld or filmworld)
-      // it is also assumed that the movie object contains the fields name, price, year
-      let movie = JSON.parse(record.body).movie;
+      // it is also assumed that the movie object contains the fields name, price, year, api
+
+      // TODO: check for duplicates
+      let movie = JSON.parse(record.body);
       // add the ID
       movie.ID = nanoid();
-      movie.api = JSON.parse(record.body).api;
 
       const newMovie = await DynamoDB.write(movie, tableName).catch((err) => {
         console.log("Error in saving the movie");
